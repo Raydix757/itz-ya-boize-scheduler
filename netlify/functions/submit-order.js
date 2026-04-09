@@ -139,6 +139,21 @@ exports.handler = async (event) => {
 
     await store.setJSON(dayKey, dayRecord);
     await store.setJSON(`booking:${booking.id}`, booking);
+   
+    await fetch("https://script.google.com/macros/s/AKfycbwMLkHzBHpRxNeFM28y_R0SZFLtcTakgjVLEEWPRab717M-jCtv8vHv0RdIhKjKxxKF/exec", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    name: booking.customerName,
+    phone: booking.customerPhone,
+    orderType: booking.serviceType,
+    date: booking.preferredDate,
+    time: booking.preferredTime,
+    items: booking.summary,
+    total: booking.subtotal,
+    notes: booking.notes
+  })
+});
 
     return {
       statusCode: 200,
