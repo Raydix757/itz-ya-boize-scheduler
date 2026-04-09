@@ -13,3 +13,8 @@ Recommended use:
 Upload this folder to a GitHub repo, then connect that repo to Netlify.
 
 Do not use simple drag-and-drop deploy for this version.
+
+
+Patch applied:
+- Fixed Netlify Blobs initialization for Lambda-compatible Functions by calling connectLambda(event)
+- This resolves MissingBlobsEnvironmentError for deployed functions that use exports.handler format

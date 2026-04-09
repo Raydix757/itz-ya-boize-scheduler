@@ -1,4 +1,4 @@
-const { getStore } = require("@netlify/blobs");
+const { getStore, connectLambda } = require("@netlify/blobs");
 
 function buildSlots() {
   const slots = [];
@@ -19,6 +19,7 @@ function isWeekday(dateString) {
 }
 
 exports.handler = async (event) => {
+  connectLambda(event);
   try {
     const params = new URLSearchParams(event.queryStringParameters || {});
     const date = params.get("date");

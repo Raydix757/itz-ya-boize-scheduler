@@ -1,4 +1,4 @@
-const { getStore } = require("@netlify/blobs");
+const { getStore, connectLambda } = require("@netlify/blobs");
 
 function buildSlots() {
   const slots = [];
@@ -23,6 +23,7 @@ function makeId() {
 }
 
 exports.handler = async (event) => {
+  connectLambda(event);
   try {
     if (event.httpMethod !== "POST") {
       return {
