@@ -1,0 +1,58 @@
+IT'Z YA BOIZE - GIT READY NETLIFY DEPLOY
+
+What this folder is for:
+This version is arranged to be pushed to a Git repo and deployed from Git in Netlify.
+That is the correct deploy method for this scheduler build because it uses:
+- Netlify Functions
+- package.json dependencies
+- Netlify Blobs
+
+Root files you should keep together:
+- index.htm
+- package.json
+- netlify.toml
+- netlify/functions/slots.js
+- netlify/functions/submit-order.js
+- all image files used by the menu
+
+How to deploy this correctly:
+
+1. Unzip this folder on your computer.
+
+2. Create a new GitHub repo.
+   Example name:
+   itz-ya-boize-scheduler
+
+3. Upload EVERYTHING inside this folder to the repo root.
+   Do not put the files inside an extra nested folder.
+
+4. In Netlify:
+   - Add new site
+   - Import from Git
+   - Choose your GitHub repo
+   - Let Netlify detect the project
+
+5. Build settings:
+   - Build command: leave blank
+   - Publish directory: .
+   - Functions directory: netlify/functions
+
+6. Deploy the site.
+
+7. After deploy, test these URLs on your new site:
+   /.netlify/functions/slots?date=2026-04-10&serviceType=Pickup
+   /.netlify/functions/slots?date=2026-04-10&serviceType=Delivery
+   /.netlify/functions/slots?date=2026-04-10&serviceType=Meet%20Up
+
+   If they are working, you should see JSON with availableSlots.
+
+8. Then test one real booking on the live site.
+
+What this fixes:
+- customers stay on your site
+- slot selection is handled on Netlify
+- no redirect to Setmore
+- no lost cart during scheduling
+
+Important note:
+This folder is already arranged for Git-based Netlify deploy.
