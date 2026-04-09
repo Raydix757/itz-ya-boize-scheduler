@@ -20,6 +20,7 @@ function isWeekday(dateString) {
 
 exports.handler = async (event) => {
   connectLambda(event);
+
   try {
     const params = new URLSearchParams(event.queryStringParameters || {});
     const date = params.get("date");
@@ -43,7 +44,8 @@ exports.handler = async (event) => {
 
     const store = getStore("bookings");
     const key = `bookings:${date}:${serviceType}`;
-    const record = (await store.getJSON(key)) || { slots: {} };
+    const raw = await store.get(key, { type: "json" });
+    const record = raw || { slots: {} };
     const taken = new Set(Object.keys(record.slots || {}));
     const availableSlots = buildSlots().filter((slot) => !taken.has(slot));
 
