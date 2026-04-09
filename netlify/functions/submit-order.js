@@ -24,6 +24,7 @@ function makeId() {
 
 exports.handler = async (event) => {
   connectLambda(event);
+
   try {
     if (event.httpMethod !== "POST") {
       return {
@@ -100,7 +101,8 @@ exports.handler = async (event) => {
 
     const store = getStore("bookings");
     const dayKey = `bookings:${preferredDate}:${serviceType}`;
-    const dayRecord = (await store.getJSON(dayKey)) || { slots: {} };
+    const rawDay = await store.get(dayKey, { type: "json" });
+    const dayRecord = rawDay || { slots: {} };
 
     if (dayRecord.slots && dayRecord.slots[preferredTime]) {
       const taken = new Set(Object.keys(dayRecord.slots || {}));
