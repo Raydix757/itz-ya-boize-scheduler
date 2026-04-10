@@ -2,7 +2,7 @@ const { getStore, connectLambda } = require("@netlify/blobs");
 
 function buildSlots() {
   const slots = [];
-  for (let m = 12 * 60; m <= 18 * 60 + 30; m += 30) {
+  for (let m = 12 * 60; m <= 18 * 60 + 20; m += 20) {
     const h = Math.floor(m / 60);
     const mins = m % 60;
     const p = h >= 12 ? "PM" : "AM";
