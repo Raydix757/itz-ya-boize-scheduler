@@ -937,7 +937,9 @@
     <div class="order-card">
       <h4>Cart</h4>
       <div class="cart-list" id="cartList"></div>
-      <div class="order-summary-line"><span>Subtotal</span><strong id="cartSubtotal">$0.00</strong></div>
+      <div class="order-summary-line"><span>Items Subtotal</span><strong id="cartSubtotal">$0.00</strong></div>
+<div class="order-summary-line"><span>Delivery Fee</span><strong id="deliveryFee">$0.00</strong></div>
+<div class="order-summary-line"><span>Total</span><strong id="cartTotal">$0.00</strong></div>
     </div>
 
     <div class="order-card">
@@ -1024,7 +1026,9 @@
     return Number(item.price || 0) * item.qty;
   }
 
-  function subtotal(){ return state.cart.reduce((s, i) => s + totalFor(i), 0); }
+  function itemSubtotal(){ return state.cart.reduce((s, i) => s + totalFor(i), 0); }
+function deliveryFee(){ return byId("serviceType").value === "Delivery" ? 10 : 0; }
+function grandTotal(){ return itemSubtotal() + deliveryFee(); }
 
   function showError(message){
     const el = byId("errorBanner");
@@ -1087,7 +1091,7 @@
   }
 
   function summaryText(){
-    const lines = state.cart.map(i => i.qty + " x " + i.name + (i.unit ? " (" + i.unit + ")" : "") + " - " + money(totalFor(i))).join("\n");
+    const lines = state.cart.map(i => i.qty + " x " + (i.brand ? i.brand + " - " : "") + i.name + (i.unit ? " (" + i.unit + ")" : "") + " - " + money(totalFor(i))).join("\\n");
     return [
       "IT'Z YA BOIZE ORDER",
       "------------------------------",
@@ -1112,8 +1116,10 @@
     const list = byId("cartList");
     const count = state.cart.reduce((s,i) => s + i.qty, 0);
     byId("fabCount").textContent = count === 1 ? "1 item" : count + " items";
-    byId("fabTotal").textContent = money(subtotal());
-    byId("cartSubtotal").textContent = money(subtotal());
+    byId("fabTotal").textContent = money(grandTotal());
+byId("cartSubtotal").textContent = money(itemSubtotal());
+byId("deliveryFee").textContent = money(deliveryFee());
+byId("cartTotal").textContent = money(grandTotal());
     byId("orderSummary").value = summaryText();
     if(!state.cart.length){
       list.innerHTML = '<div class="empty-note">Your cart is empty. Tap any add button from the menu.</div>';
@@ -1122,7 +1128,7 @@
     list.innerHTML = state.cart.map(i => `
       <div class="cart-row">
         <div>
-          <strong>${i.name}</strong>
+          <strong>${i.brand ? i.brand + " - " : ""}${i.name}</strong>
           <p>${i.section} • ${i.category}${i.unit ? " • " + i.unit : ""}</p>
         </div>
         <div class="qty">
@@ -1172,8 +1178,10 @@
       deliveryAddress: byId("custAddress").value,
       meetupLocation: byId("meetupLocation").value,
       notes: byId("custNotes").value,
-      subtotal: subtotal(),
-      summary: summaryText(),
+      subtotal: itemSubtotal(),
+deliveryFee: deliveryFee(),
+total: grandTotal(),
+summary: summaryText(),
       items: state.cart.map(i => ({
         section: i.section,
         category: i.category,
@@ -1262,7 +1270,7 @@
               btn.type = "button";
               btn.className = "add-chip";
               btn.textContent = "+ Add " + money(price > 0 ? price : 5);
-              btn.addEventListener("click", () => addItem({section:secName, category:catTitle, name, unit:"", price:price || 5}));
+              btn.addEventListener("click", () => addItem({section:secName, category:catTitle, brand:catTitle, name, unit:"", price:price || 5}));
               actions.appendChild(btn);
             }
           }
