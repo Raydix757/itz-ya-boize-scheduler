@@ -2,7 +2,7 @@ const { getStore, connectLambda } = require("@netlify/blobs");
 
 function buildSlots() {
   const slots = [];
-  for (let m = 12 * 60; m <= 18 * 60 + 30; m += 30) {
+  for (let m = 12 * 60; m <= 18 * 60 + 20; m += 20) {
     const h = Math.floor(m / 60);
     const mins = m % 60;
     const p = h >= 12 ? "PM" : "AM";
@@ -36,19 +36,21 @@ exports.handler = async (event) => {
 
     const payload = JSON.parse(event.body || "{}");
     const {
-      customerName,
-      customerPhone,
-      customerEmail,
-      serviceType,
-      preferredDate,
-      preferredTime,
-      deliveryAddress,
-      meetupLocation,
-      notes,
-      subtotal,
-      summary,
-      items
-    } = payload;
+  customerName,
+  customerPhone,
+  customerEmail,
+  serviceType,
+  preferredDate,
+  preferredTime,
+  deliveryAddress,
+  meetupLocation,
+  notes,
+  subtotal,
+  deliveryFee,
+  total,
+  summary,
+  items
+} = payload;
 
     if (!customerName || !customerPhone || !preferredDate || !preferredTime || !serviceType) {
       return {
@@ -129,9 +131,11 @@ exports.handler = async (event) => {
       meetupLocation: meetupLocation || "",
       notes: notes || "",
       subtotal: Number(subtotal || 0),
-      summary: summary || "",
-      items,
-      createdAt: new Date().toISOString()
+deliveryFee: Number(deliveryFee || 0),
+total: Number(total || 0),
+summary: summary || "",
+items,
+createdAt: new Date().toISOString()
     };
 
     dayRecord.slots = dayRecord.slots || {};
