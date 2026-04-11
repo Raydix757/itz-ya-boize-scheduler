@@ -1144,7 +1144,7 @@ function grandTotal(){ return itemSubtotal() + deliveryFee(); }
 byId("cartSubtotal").textContent = money(itemSubtotal());
 byId("deliveryFee").textContent = money(deliveryFee());
 byId("cartTotal").textContent = money(grandTotal());
-    byId("orderSummary").value = summaryText();
+byId("orderSummary").value = money(grandTotal());
     if(!state.cart.length){
       list.innerHTML = '<div class="empty-note">Your cart is empty. Tap any add button from the menu.</div>';
       return;
