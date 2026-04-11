@@ -86,7 +86,7 @@
   position:fixed;
   right:18px;
   bottom:18px;
-  z-index:99999;
+  z-index:100001;
   pointer-events:auto;
   display:flex;align-items:center;gap:12px;
   border:1px solid rgba(255,255,255,.12);
@@ -112,11 +112,21 @@
   width:min(620px,100%);
   height:100dvh;
   z-index:100000;
-  transform:translateX(102%);transition:transform .24s ease;
-  background:#0f0f13;border-left:1px solid rgba(255,255,255,.12);
-  display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.5)
+  transform:translateX(102%);
+  transition:transform .24s ease;
+  background:#0f0f13;
+  border-left:1px solid rgba(255,255,255,.12);
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+  visibility:hidden;
+  pointer-events:none;
 }
-.order-panel.open{transform:translateX(0)}
+.order-panel.open{
+  transform:translateX(0);
+  visibility:visible;
+  pointer-events:auto;
+}
 .order-head{display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid rgba(255,255,255,.08)}
 .order-head h3{margin:0;font-size:24px}
 .order-close{
@@ -1159,14 +1169,38 @@ byId("cartTotal").textContent = money(grandTotal());
   }
 
   function openPanel(){
-    byId("orderPanel").classList.add("open");
-    byId("orderOverlay").classList.add("open");
-  }
+  const panel = byId("orderPanel");
+  const overlay = byId("orderOverlay");
+  if (!panel || !overlay) return;
 
-  function closePanel(){
-    byId("orderPanel").classList.remove("open");
-    byId("orderOverlay").classList.remove("open");
-  }
+  panel.classList.add("open");
+  overlay.classList.add("open");
+
+  panel.style.transform = "translateX(0)";
+  panel.style.visibility = "visible";
+  panel.style.pointerEvents = "auto";
+
+  overlay.style.opacity = "1";
+  overlay.style.pointerEvents = "auto";
+}
+
+function closePanel(){
+  const panel = byId("orderPanel");
+  const overlay = byId("orderOverlay");
+  if (!panel || !overlay) return;
+
+  panel.classList.remove("open");
+  overlay.classList.remove("open");
+
+  panel.style.transform = "translateX(102%)";
+  panel.style.visibility = "hidden";
+  panel.style.pointerEvents = "none";
+
+  overlay.style.opacity = "0";
+  overlay.style.pointerEvents = "none";
+}
+
+  
 
   function validBeforeBook(){
     if(!state.cart.length){ showError("Add at least one item before booking."); return false; }
@@ -1334,7 +1368,7 @@ summary: summaryText(),
     loadAvailableSlots();
 
     byId("orderFab").addEventListener("click", openPanel);
-byId("orderFab").onclick = openPanel;
+    byId("orderFab").onclick = openPanel;
     byId("orderClose").addEventListener("click", closePanel);
     byId("orderOverlay").addEventListener("click", closePanel);
     byId("prefDate").addEventListener("change", loadAvailableSlots);
